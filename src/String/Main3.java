@@ -1,7 +1,9 @@
+package String;
+
 import java.util.Scanner;
 
 //이 문제의 핵심은 split.(" ")
-public class Main1_3 {
+public class Main3 {
     public static void main(String[] args) {
             Scanner sc = new Scanner(System.in);
             String str;

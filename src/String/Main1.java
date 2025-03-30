@@ -1,3 +1,5 @@
+package String;
+
 import java.util.Scanner;
 
 //코드에서 str = sc.nextLine().toLowerCase();를 사용하여 문자열은 소문자로 변환했지만, 입력받은 문자
@@ -5,7 +7,7 @@ import java.util.Scanner;
 
 
 
-public class Main1_1 {
+public class Main1 {
     public static void main(String[] args) {
             Scanner sc = new Scanner(System.in);
             String str;

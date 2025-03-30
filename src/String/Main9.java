@@ -1,7 +1,9 @@
+package String;
+
 import java.util.Scanner;
 
 
-public class Main1_9 {
+public class Main9 {
 //9. 숫자만 추출
 //    설명
 //    문자와 숫자가 섞여있는 문자열이 주어지면 그 중 숫자만 추출하여 그 순서대로 자연수를 만듭니다.
