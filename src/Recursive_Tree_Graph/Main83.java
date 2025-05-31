@@ -34,8 +34,8 @@ class Main83 {
                 int ny = tmp.y + dy[i];
 
                 if(nx>=1 && ny>=1 && nx<=7 && ny<=7 && board[nx][ny]==0){
-                    board[nx][ny] = 1;
                     Q.offer(new Point83(nx,ny));
+                    board[nx][ny] = 1;
                     dis[nx][ny] = dis[tmp.x][tmp.y]+1;
                 }
             }
