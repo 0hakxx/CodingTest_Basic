@@ -1,85 +1,87 @@
+package Recursive_Tree_Graph;
+import java.awt.*;
 import java.util.*;
 
-class Point {
+// 좌표를 나타내는 클래스 (집 또는 피자집의 위치)
+class Point87 {
     public int x, y;
-    Point(int x, int y) {
+    Point87(int x, int y) {
         this.x = x;
         this.y = y;
     }
 }
-class Main {
 
-    static int N; // 도시 격자판 크기 (N x N)
-    static int M; // 선택할 피자집 개수
-    static int totalPizzaShopCount; // 전체 피자집 개수
-    static int minTotalDeliveryDistance = Integer.MAX_VALUE; // 모든 집의 최소 배달 거리 합 중 최솟값
+class Main87 {
 
-    static int[] selectedPizzaShopIndexes; // M개의 피자집 조합을 저장할 배열
+    static ArrayList<Point87> houses;             // 도시의 모든 집 좌표를 저장하는 리스트
+    static ArrayList<Point87> pizzaShops;         // 도시의 모든 피자집 좌표를 저장하는 리스트
 
-    static ArrayList<Point> houses; // 모든 집 좌표 리스트
-    static ArrayList<Point> pizzaShops; // 모든 피자집 좌표 리스트
-    
-    public void findMinDeliveryDistance(int level, int start) {
-        // M개의 피자집 조합이 완성된 경우
-        if (level == M) {
-            int currentTotalDeliveryDistance = 0; // 현재 조합의 총 배달 거리 합 초기화
+    static int N;                               // 도시 격자판 크기 (N x N)
+    static int M;                               // 선택할 피자집의 개수
+    static int totalPizzaShopCount;             // 전체 피자집 개수
+    static int[] selectedPizzaShopIndexes;      // 현재 선택된 M개의 피자집 인덱스를 저장할 배열
 
-            // 각 집(house)에 대해 최단 피자 배달 거리 계산
-            for (Point house : houses) {
-                int minDistanceForHouse = Integer.MAX_VALUE; // 현재 집에서 가장 가까운 피자집까지의 거리
+    static int answer = Integer.MAX_VALUE;      // 정답: 모든 집의 최소 배달 거리 합 중 최솟값
 
-                // 선택된 M개의 피자집 중 가장 가까운 피자집 찾기
-                for (int selectedPizzaShopIndex : selectedPizzaShopIndexes) {
-                    Point selectedPizzaShop = pizzaShops.get(selectedPizzaShopIndex);
+    /**
+     * DFS를 이용해 피자집 M개를 조합으로 선택한다.
+     * 조합이 완성되면, 해당 조합으로 도시 전체 피자 배달 거리의 총합을 계산하고
+     * 가장 작은 값을 answer에 저장한다.
+     *
+     * @param level 현재까지 선택한 피자집 수 (0 ~ M)
+     * @param start 다음에 선택할 피자집 인덱스의 시작값 (중복 없는 조합을 위해 사용)
+     */
+    public void DFS(int level, int start) {
+        if (level == M) { // M개의 피자집 조합이 완성된 경우
+            int sum = 0;  // 현재 조합에서의 도시 전체 배달 거리 합
 
-                    // 맨해튼 거리 계산: |x1-x2| + |y1-y2|
-                    int distance = Math.abs(house.x - selectedPizzaShop.x) + Math.abs(house.y - selectedPizzaShop.y);
-                    minDistanceForHouse = Math.min(minDistanceForHouse, distance); // 더 짧은 거리로 갱신
+            // 각 집에 대해 가장 가까운 피자집까지의 거리 계산
+            for (Point87 house : houses) {
+                int dis = Integer.MAX_VALUE;
+                for (int i : selectedPizzaShopIndexes) {
+                    Point87 pizza = pizzaShops.get(i);
+                    int distance = Math.abs(house.x - pizza.x) + Math.abs(house.y - pizza.y);
+                    dis = Math.min(dis, distance);
                 }
-                currentTotalDeliveryDistance += minDistanceForHouse; // 해당 집의 최소 거리를 총 합에 더하기
+                sum += dis; // 모든 집의 최소 배달 거리 누적
             }
-            // 현재 조합의 총 배달 거리가 전체 최솟값보다 작으면 갱신
-            minTotalDeliveryDistance = Math.min(minTotalDeliveryDistance, currentTotalDeliveryDistance);
-        }
-        // 재귀 호출: M개의 피자집을 조합하는 과정
-        else {
-            // 다음 피자집을 선택하기 위해 사용 가능한 피자집들을 반복
+
+            // 현재 조합의 거리 합과 기존 최소값 비교하여 더 작은 값으로 갱신
+            answer = Math.min(answer, sum);
+        } else {
+            // 피자집 조합 선택 (중복 없는 조합을 위해 start부터 반복)
             for (int i = start; i < totalPizzaShopCount; i++) {
-                selectedPizzaShopIndexes[level] = i; // 현재 level에 해당하는 피자집 인덱스 저장
-                findMinDeliveryDistance(level + 1, i + 1); // 다음 level의 피자집을 선택하러 재귀 호출
+                selectedPizzaShopIndexes[level] = i;
+                DFS(level + 1, i + 1); // 다음 피자집 선택
             }
         }
     }
 
     public static void main(String[] args) {
-        Main T = new Main();
+        Main87 T = new Main87(); // DFS를 수행하기 위한 객체 생성
         Scanner scanner = new Scanner(System.in);
 
-        N = scanner.nextInt(); // 도시 격자판 크기 N 입력
-        M = scanner.nextInt(); // 선택할 피자집 개수 M 입력
+        // 도시 크기 N, 선택할 피자집 수 M 입력
+        N = scanner.nextInt();
+        M = scanner.nextInt();
 
-        pizzaShops = new ArrayList<>(); // 피자집 좌표 리스트 초기화
-        houses = new ArrayList<>();     // 집 좌표 리스트 초기화
+        houses = new ArrayList<>();
+        pizzaShops = new ArrayList<>();
 
-        // 도시 격자판 데이터 입력받고 집(1)과 피자집(2) 좌표 리스트에 저장
+        // 도시 격자 입력: 0=빈칸, 1=집, 2=피자집
         for (int i = 0; i < N; i++) {
             for (int j = 0; j < N; j++) {
-                int cellType = scanner.nextInt();
-                if (cellType == 1) {
-                    houses.add(new Point(i, j)); // 집 좌표 추가
-                } else if (cellType == 2) {
-                    pizzaShops.add(new Point(i, j)); // 피자집 좌표 추가
-                }
+                int tmp = scanner.nextInt();
+                if (tmp == 1) houses.add(new Point87(i, j));
+                else if (tmp == 2) pizzaShops.add(new Point87(i, j));
             }
         }
 
-        totalPizzaShopCount = pizzaShops.size(); // 전체 피자집 개수 저장
-        selectedPizzaShopIndexes = new int[M]; // M개의 피자집 인덱스 저장 배열 초기화
+        totalPizzaShopCount = pizzaShops.size();   // 전체 피자집 개수 저장
+        selectedPizzaShopIndexes = new int[M];     // 피자집 M개 선택을 위한 배열 초기화
 
-        // DFS 탐색 시작 (level 0, start 인덱스 0부터)
-        T.findMinDeliveryDistance(0, 0);
-
-        System.out.println(minTotalDeliveryDistance); // 최종 최소 총 배달 거리 출력
+        T.DFS(0, 0);  // DFS를 통해 M개 피자집 조합을 탐색 시작
+        System.out.println(answer);  // 결과 출력: 최소 도시 피자 배달 거리
         scanner.close();
     }
 }
