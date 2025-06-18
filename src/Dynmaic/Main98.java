@@ -24,7 +24,7 @@ public class Main98 {
     static int[] dy; // 동적 프로그래밍을 위한 배열. dy[i]는 i번째 계단까지 가는 방법의 수를 저장
     public int solution(int n){
         dy[1] = 1; // 1번째 계단까지 가는 방법은 1가지 (1칸 오르기)
-        dy[2] = 2;
+        dy[2] = 12;
         for(int i = 3; i <= n; i++){
             dy[i] = dy[i-1] + dy[i-2];
         }
@@ -34,7 +34,7 @@ public class Main98 {
         Main98 T = new Main98();
         Scanner sc = new Scanner(System.in);
         int n = sc.nextInt();
-        n++;
+
         dy = new int[n+1];
 
         System.out.println(T.solution(n));
